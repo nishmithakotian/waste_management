@@ -74,12 +74,15 @@ const Post = () => {
 
       if (isEdit) {
         await axios.put(
-          `http://localhost:8000/waste/update/${editWasteId}`,
+          `https://waste-management-0kpq.onrender.com/waste/update/${editWasteId}`,
           data
         );
         alert("Waste updated successfully!");
       } else {
-        await axios.post("http://localhost:8000/waste/add", data);
+        await axios.post(
+          "https://waste-management-0kpq.onrender.com/waste/add",
+          data
+        );
         alert("Waste added successfully!");
       }
 
@@ -104,7 +107,9 @@ const Post = () => {
 
   const getUser = async () => {
     try {
-      const { data } = await axios.get(`http://localhost:8000/user/${userId}`);
+      const { data } = await axios.get(
+        `https://waste-management-0kpq.onrender.com/user/${userId}`
+      );
       setWastes(data?.user?.wastes || []);
     } catch (error) {
       console.log(error);
@@ -113,7 +118,9 @@ const Post = () => {
 
   const handleDel = async (wasteId) => {
     try {
-      await axios.delete(`http://localhost:8000/waste/delete/${wasteId}`);
+      await axios.delete(
+        `https://waste-management-0kpq.onrender.com/waste/delete/${wasteId}`
+      );
       getUser();
     } catch (error) {
       console.log(error);

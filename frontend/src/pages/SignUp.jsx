@@ -22,7 +22,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/register",
+        "https://waste-management-0kpq.onrender.com/user/register",
         userDetails,
         {
           headers: {

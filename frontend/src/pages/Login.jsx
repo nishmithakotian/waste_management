@@ -21,7 +21,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:8000/user/login",
+        "https://waste-management-0kpq.onrender.com/user/login",
         userCredentials,
         {
           headers: {
