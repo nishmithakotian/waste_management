@@ -1,0 +1,309 @@
+import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import axios from "axios";
+import { MdDelete, MdOutlineChangeCircle } from "react-icons/md";
+import { ImSpinner8 } from "react-icons/im";
+import Header from "../Components/Header";
+
+const Post = () => {
+  const [showModal, setShowModal] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
+  const [editWasteId, setEditWasteId] = useState(null);
+  const [formData, setFormData] = useState({
+    image: null,
+    type: "",
+    location: "",
+    contact: "",
+    description: "",
+  });
+  const [isUploading, setIsUploading] = useState(false);
+  const [wastes, setWastes] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const user = JSON.parse(localStorage.getItem("User"));
+  const userId = user?.user?._id;
+
+  const handleChange = (e) => {
+    const { name, value, files } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: files ? files[0] : value,
+    }));
+  };
+
+  const uploadToCloudinary = async (imageFile) => {
+    const cloudinaryUrl =
+      "https://api.cloudinary.com/v1_1/dgplustqn/image/upload";
+    const formData = new FormData();
+    formData.append("file", imageFile);
+    formData.append("upload_preset", "pmcr8gua");
+
+    try {
+      const response = await axios.post(cloudinaryUrl, formData);
+      return response.data.secure_url;
+    } catch (error) {
+      console.error("Error uploading to Cloudinary:", error);
+      throw new Error("Cloudinary upload failed.");
+    }
+  };
+
+  const handleSave = async () => {
+    if (!formData.type || !formData.location || !formData.contact) {
+      alert("Please fill in all required fields.");
+      return;
+    }
+    setLoading(true);
+
+    setIsUploading(true);
+
+    try {
+      let imageUrl = formData.image;
+      if (formData.image instanceof File) {
+        imageUrl = await uploadToCloudinary(formData.image);
+      }
+
+      const data = {
+        userId,
+        typeOfWaste: formData.type,
+        location: formData.location,
+        contactNumber: formData.contact,
+        description: formData.description,
+        image: imageUrl,
+        user: userId,
+      };
+
+      if (isEdit) {
+        await axios.put(
+          `http://localhost:8000/waste/update/${editWasteId}`,
+          data
+        );
+        alert("Waste updated successfully!");
+      } else {
+        await axios.post("http://localhost:8000/waste/add", data);
+        alert("Waste added successfully!");
+      }
+
+      setShowModal(false);
+      setIsEdit(false);
+      setFormData({
+        image: null,
+        type: "",
+        location: "",
+        contact: "",
+        description: "",
+      });
+      getUser();
+    } catch (error) {
+      console.error("Error:", error);
+      alert("Failed to save data. Please try again.");
+    } finally {
+      setIsUploading(false);
+      setLoading(false);
+    }
+  };
+
+  const getUser = async () => {
+    try {
+      const { data } = await axios.get(`http://localhost:8000/user/${userId}`);
+      setWastes(data?.user?.wastes || []);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDel = async (wasteId) => {
+    try {
+      await axios.delete(`http://localhost:8000/waste/delete/${wasteId}`);
+      getUser();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleEdit = (waste) => {
+    setIsEdit(true);
+    setEditWasteId(waste._id);
+    setFormData({
+      image: waste.image,
+      type: waste.typeOfWaste,
+      location: waste.location,
+      contact: waste.contactNumber,
+      description: waste.description,
+    });
+    setShowModal(true);
+  };
+
+  useEffect(() => {
+    getUser();
+  }, []);
+
+  return (
+    <>
+      <Header />
+      <div className="flex justify-between items-center p-4 text-[20px] font-serif">
+        <button
+          onClick={() => {
+            setShowModal(true);
+            setIsEdit(false);
+            setFormData({
+              image: null,
+              type: "",
+              location: "",
+              contact: "",
+              description: "",
+            });
+          }}
+          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+        >
+          Add Waste
+        </button>
+      </div>
+      {loading ? (
+        <div className="flex justify-center items-center h-[80vh]">
+          <ImSpinner8 size={100} color="blue" className="animate-spin" />
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
+          {wastes.map((waste) => (
+            <div
+              key={waste._id}
+              className="bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-full sm:w-[400px] h-auto"
+            >
+              {waste.image && (
+                <img
+                  src={waste.image}
+                  alt={waste.typeOfWaste}
+                  className="h-40 w-full object-cover rounded-md mb-4"
+                />
+              )}
+              <h3 className="text-lg font-bold">{waste.typeOfWaste}</h3>
+              <p className="text-sm text-gray-700">
+                Location: {waste.location}
+              </p>
+              <p className="text-sm text-gray-700">
+                Contact: {waste.contactNumber}
+              </p>
+              {waste.description && (
+                <p className="text-sm text-gray-700 mt-2">
+                  {waste.description}
+                </p>
+              )}
+              <div className="flex justify-end items-center gap-4 mt-4">
+                <MdDelete
+                  size={30}
+                  className="cursor-pointer hover:text-red-400 hover:scale-105"
+                  onClick={() => handleDel(waste._id)}
+                />
+                <MdOutlineChangeCircle
+                  size={30}
+                  className="cursor-pointer hover:text-violet-400 hover:scale-105"
+                  onClick={() => handleEdit(waste)}
+                />
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[400px]">
+            <h2 className="text-2xl font-bold mb-4">
+              {isEdit ? "Edit Waste" : "Add Waste"}
+            </h2>
+            <form>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">
+                  Upload Image
+                </label>
+                <input
+                  type="file"
+                  name="image"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={handleChange}
+                  className="w-full"
+                />
+                {formData.image && typeof formData.image === "string" && (
+                  <img
+                    src={formData.image}
+                    alt="Preview"
+                    className="h-20 w-20 mt-2 rounded-md"
+                  />
+                )}
+              </div>
+
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">
+                  Type of Waste
+                </label>
+                <input
+                  type="text"
+                  name="type"
+                  value={formData.type}
+                  onChange={handleChange}
+                  placeholder="e.g., Plastic, Metal"
+                  className="w-full border p-2 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">Location</label>
+                <input
+                  type="text"
+                  name="location"
+                  value={formData.location}
+                  onChange={handleChange}
+                  placeholder="Enter location"
+                  className="w-full border p-2 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">Contact</label>
+                <input
+                  type="text"
+                  name="contact"
+                  value={formData.contact}
+                  onChange={handleChange}
+                  placeholder="Enter contact details"
+                  className="w-full border p-2 rounded"
+                  required
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">
+                  Description (Optional)
+                </label>
+                <textarea
+                  name="description"
+                  value={formData.description}
+                  onChange={handleChange}
+                  placeholder="Add any additional details"
+                  className="w-full border p-2 rounded"
+                />
+              </div>
+            </form>
+            <div className="flex justify-end gap-2">
+              <button
+                onClick={() => setShowModal(false)}
+                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSave}
+                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                disabled={isUploading}
+              >
+                {isUploading ? "Saving..." : isEdit ? "Update" : "Save"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
+export default Post;
