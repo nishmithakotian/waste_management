@@ -227,7 +227,6 @@ const Post = () => {
                   type="file"
                   name="image"
                   accept="image/*"
-                  capture="environment"
                   onChange={handleChange}
                   className="w-full"
                 />

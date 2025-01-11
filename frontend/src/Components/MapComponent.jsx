@@ -61,6 +61,8 @@ function MapComponent({ location }) {
             width: "90%",
             borderRadius: "0.5rem",
             maxWidth: "800px",
+            zIndex: "1",
+            position: "relative",
           }}
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

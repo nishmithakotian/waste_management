@@ -56,9 +56,9 @@ const Header = () => {
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         } transition-transform duration-300 ease-in-out z-40 shadow-lg`}
       >
-        <div className="p-4">
+        <div className="p-4 z-50">
           <div className="text-lg font-bold text-blue-700 mb-6">Navigation</div>
-          <div className="flex flex-col gap-10 mt-[50px]">
+          <div className="flex flex-col gap-10 mt-[50px] z-50">
             <Link
               to="/home"
               className="text-blue-600 hover:text-blue-800 transition"
