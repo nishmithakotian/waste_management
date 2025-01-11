@@ -41,16 +41,16 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row justify-center items-center lg:h-screen w-full px-4 lg:px-0">
-      {/* Background image */}
+    <div className="flex flex-col lg:flex-row justify-center items-center h-screen w-full px-4 lg:px-0">
+      {/* Background image (hidden on mobile) */}
       <img
-        className="w-full lg:w-[45vw] mb-6 lg:mb-0"
+        className="hidden lg:block w-full lg:w-[45vw] mb-6 lg:mb-0"
         src={bg}
         alt="Background"
       />
 
       {/* Sign Up Form Box */}
-      <div className="bg-slate-100 shadow-xl w-full lg:w-[500px] rounded-[15px] lg:ml-[50px] flex flex-col justify-center items-center p-6 lg:p-8">
+      <div className="bg-slate-100 shadow-xl w-full max-w-[500px] rounded-[15px] flex flex-col justify-center items-center p-6 lg:p-8">
         <h2 className="text-2xl lg:text-3xl font-semibold text-gray-700 mb-6 lg:mb-8">
           Sign Up
         </h2>

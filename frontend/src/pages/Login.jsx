@@ -35,10 +35,10 @@ const Login = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row justify-center items-center h-screen w-full px-4">
-      {/* Background image */}
+    <div className="flex justify-center items-center h-screen w-full px-4">
+      {/* Background image - Hidden in mobile view */}
       <img
-        className="w-full lg:w-[45vw] mb-6 lg:mb-0"
+        className="hidden lg:block w-full lg:w-[45vw] mb-6 lg:mb-0"
         src={bg}
         alt="Background"
       />
