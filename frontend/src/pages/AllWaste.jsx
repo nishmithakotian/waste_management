@@ -9,7 +9,7 @@ import Header from "../Components/Header";
 const AllWaste = () => {
   const [wastes, setWastes] = useState([]);
   const [filteredWastes, setFilteredWastes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Initially set loading to true
   const [search, setSearch] = useState("");
 
   // Fetch all waste data
@@ -21,8 +21,10 @@ const AllWaste = () => {
       console.log(data);
       setWastes(data.wastes); // Assume data is an array of waste objects
       setFilteredWastes(data.wastes); // Initially show all wastes
+      setLoading(false); // Set loading to false once data is fetched
     } catch (error) {
       console.error("Error fetching waste data:", error);
+      setLoading(false); // Ensure loading is false in case of error
     }
   };
 
@@ -63,6 +65,7 @@ const AllWaste = () => {
       </div>
 
       {loading ? (
+        // Show spinner when loading
         <div className="flex justify-center items-center h-[80vh]">
           <ImSpinner8
             size={50}

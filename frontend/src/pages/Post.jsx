@@ -19,6 +19,7 @@ const Post = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [wastes, setWastes] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [spinner, setSpinner] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("User"));
   const userId = user?.user?._id;
@@ -53,7 +54,6 @@ const Post = () => {
       return;
     }
     setLoading(true);
-
     setIsUploading(true);
 
     try {
@@ -107,12 +107,15 @@ const Post = () => {
 
   const getUser = async () => {
     try {
+      setSpinner(true); // Show spinner while fetching data
       const { data } = await axios.get(
         `https://waste-management-0kpq.onrender.com/user/${userId}`
       );
       setWastes(data?.user?.wastes || []);
     } catch (error) {
       console.log(error);
+    } finally {
+      setSpinner(false); // Hide spinner after data is fetched
     }
   };
 
@@ -165,50 +168,63 @@ const Post = () => {
           Add Waste
         </button>
       </div>
-      {loading ? (
+
+      {/* Spinner while loading */}
+      {spinner ? (
         <div className="flex justify-center items-center h-[80vh]">
-          <ImSpinner8 size={100} color="blue" className="animate-spin" />
+          <ImSpinner8
+            size={50}
+            color="blue"
+            className="animate-spin mt-[100px]"
+          />
         </div>
       ) : (
+        // Show content after data is loaded
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
-          {wastes.map((waste) => (
-            <div
-              key={waste._id}
-              className="bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-full sm:w-[400px] h-auto"
-            >
-              {waste.image && (
-                <img
-                  src={waste.image}
-                  alt={waste.typeOfWaste}
-                  className="h-40 w-full object-cover rounded-md mb-4"
-                />
-              )}
-              <h3 className="text-lg font-bold">{waste.typeOfWaste}</h3>
-              <p className="text-sm text-gray-700">
-                Location: {waste.location}
-              </p>
-              <p className="text-sm text-gray-700">
-                Contact: {waste.contactNumber}
-              </p>
-              {waste.description && (
-                <p className="text-sm text-gray-700 mt-2">
-                  {waste.description}
-                </p>
-              )}
-              <div className="flex justify-end items-center gap-4 mt-4">
-                <MdDelete
-                  size={30}
-                  className="cursor-pointer hover:text-red-400 hover:scale-105"
-                  onClick={() => handleDel(waste._id)}
-                />
-                <MdOutlineChangeCircle
-                  size={30}
-                  className="cursor-pointer hover:text-violet-400 hover:scale-105"
-                  onClick={() => handleEdit(waste)}
-                />
-              </div>
+          {wastes.length === 0 ? (
+            <div className="text-center text-xl font-bold">
+              No posts uploaded.
             </div>
-          ))}
+          ) : (
+            wastes.map((waste) => (
+              <div
+                key={waste._id}
+                className="bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-full sm:w-[400px] h-auto"
+              >
+                {waste.image && (
+                  <img
+                    src={waste.image}
+                    alt={waste.typeOfWaste}
+                    className="h-40 w-full object-cover rounded-md mb-4"
+                  />
+                )}
+                <h3 className="text-lg font-bold">{waste.typeOfWaste}</h3>
+                <p className="text-sm text-gray-700">
+                  Location: {waste.location}
+                </p>
+                <p className="text-sm text-gray-700">
+                  Contact: {waste.contactNumber}
+                </p>
+                {waste.description && (
+                  <p className="text-sm text-gray-700 mt-2">
+                    {waste.description}
+                  </p>
+                )}
+                <div className="flex justify-end items-center gap-4 mt-4">
+                  <MdDelete
+                    size={30}
+                    className="cursor-pointer hover:text-red-400 hover:scale-105"
+                    onClick={() => handleDel(waste._id)}
+                  />
+                  <MdOutlineChangeCircle
+                    size={30}
+                    className="cursor-pointer hover:text-violet-400 hover:scale-105"
+                    onClick={() => handleEdit(waste)}
+                  />
+                </div>
+              </div>
+            ))
+          )}
         </div>
       )}
 
