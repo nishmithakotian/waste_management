@@ -27,10 +27,10 @@ const Home = () => {
 
             {/* Description */}
             <p className="text-blue-400 text-[14px] md:text-[20px] font-serif mt-4 md:mt-[50px] w-full md:w-[500px] mx-auto md:mx-0">
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Eum
-              quisquam nemo cum aperiam id consequuntur, quidem error similique
-              consectetur voluptatibus aut doloremque eaque illum dicta
-              architecto.
+              "Reimagine Waste: Real-Time Solutions for Clean Disposal and
+              Product Reuse" Empowering communities with smarter waste
+              segregation while promoting the reuse and resale of products for a
+              sustainable future.
             </p>
 
             {/* Button */}
