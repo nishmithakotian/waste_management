@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { ImSpinner8 } from "react-icons/im";
 import Header from "../Components/Header";
@@ -7,12 +6,25 @@ import Header from "../Components/Header";
 const Upload = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isPredictionModalOpen, setIsPredictionModalOpen] = useState(false);
+  const [isSolutionModalOpen, setIsSolutionModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
     setSelectedImage(file);
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith("image/")) {
+      setSelectedImage(file);
+    }
   };
 
   const handleSubmit = async () => {
@@ -29,15 +41,24 @@ const Upload = () => {
       );
       setPrediction(response.data.prediction);
       setLoading(false);
-      setIsModalOpen(true);
+      setIsPredictionModalOpen(true);
     } catch (error) {
       console.error("Error uploading the image:", error);
+      setLoading(false);
     }
   };
 
-  const closeModal = () => {
-    setIsModalOpen(false);
+  const closePredictionModal = () => {
+    setIsPredictionModalOpen(false);
     setSelectedImage(null);
+  };
+
+  const openSolutionModal = () => {
+    setIsSolutionModalOpen(true);
+  };
+
+  const closeSolutionModal = () => {
+    setIsSolutionModalOpen(false);
   };
 
   return (
@@ -46,7 +67,7 @@ const Upload = () => {
       <Header />
 
       {/* Upload Section */}
-      <div className="flex flex-col items-center justify-center mt-10 space-y-6 px-4 sm:px-6 md:px-10">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
         <div className="text-center">
           <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
             Waste Classification
@@ -57,28 +78,33 @@ const Upload = () => {
           </p>
         </div>
 
-        {/* Styled File Upload Input */}
-        <label
-          htmlFor="imageUpload"
-          className="w-48 sm:w-64 flex flex-col items-center justify-center p-4 sm:p-6 bg-blue-100 border-2 border-blue-400 rounded-lg cursor-pointer hover:bg-blue-200 transition duration-300 ease-in-out shadow-lg"
+        {/* Drag-and-Drop File Upload */}
+        <div
+          className="w-full max-w-md mt-6 p-8 border-2 border-dashed border-blue-400 rounded-lg bg-blue-50 text-center cursor-pointer hover:bg-blue-100 transition duration-300 ease-in-out"
+          onDragOver={handleDragOver}
+          onDrop={handleDrop}
         >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-8 w-8 sm:h-10 sm:w-10 mb-2 sm:mb-3 text-blue-500"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M12 4v16m8-8H4"
-            />
-          </svg>
-          <span className="text-sm sm:text-lg font-medium text-blue-600">
-            Click to Upload Image
-          </span>
+          <label htmlFor="imageUpload" className="cursor-pointer">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-12 w-12 mx-auto text-blue-500"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth="2"
+                d="M12 4v16m8-8H4"
+              />
+            </svg>
+            <p className="mt-2 text-sm text-gray-600">
+              Drag and drop an image here or{" "}
+              <span className="text-blue-600 font-medium">click to upload</span>
+              .
+            </p>
+          </label>
           <input
             id="imageUpload"
             type="file"
@@ -86,11 +112,11 @@ const Upload = () => {
             className="hidden"
             onChange={handleImageUpload}
           />
-        </label>
+        </div>
 
         {/* Image Preview */}
         {selectedImage && (
-          <div className="mt-4 w-40 h-40 sm:w-64 sm:h-64 border-2 border-dashed border-blue-400 rounded-lg overflow-hidden shadow-lg">
+          <div className="mt-6 w-48 h-48 sm:w-64 sm:h-64 border-2 border-dashed border-blue-400 rounded-lg overflow-hidden shadow-lg">
             <img
               src={URL.createObjectURL(selectedImage)}
               alt="Selected"
@@ -102,7 +128,7 @@ const Upload = () => {
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="px-4 sm:px-6 py-2 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out text-sm sm:text-base"
+          className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out text-sm sm:text-base"
         >
           {loading ? (
             <ImSpinner8 size={20} className="animate-spin" />
@@ -112,16 +138,14 @@ const Upload = () => {
         </button>
       </div>
 
-      {/* Modal for Prediction */}
-      {isModalOpen && (
+      {/* Prediction Modal */}
+      {isPredictionModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-4 sm:p-6">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-lg sm:text-xl font-bold text-gray-800">
-                Prediction
-              </h2>
+              <h2 className="text-xl font-bold text-gray-800">Prediction</h2>
               <button
-                onClick={closeModal}
+                onClick={closePredictionModal}
                 className="text-gray-400 hover:text-gray-600"
               >
                 ✖
@@ -132,19 +156,90 @@ const Upload = () => {
                 <img
                   src={URL.createObjectURL(selectedImage)}
                   alt="Uploaded"
-                  className="w-full h-40 sm:h-48 object-cover rounded-lg shadow-lg"
+                  className="w-full h-48 object-cover rounded-lg shadow-lg"
                 />
               )}
               <div className="mt-4 text-center">
-                <p className="text-sm sm:text-base text-gray-700">
+                <p className="text-base text-gray-700">
                   <strong>Type:</strong>{" "}
                   {prediction && Object.keys(prediction)[0]}
                 </p>
-                <p className="text-sm sm:text-base text-gray-700">
+                <p className="text-base text-gray-700">
                   <strong>Category:</strong>{" "}
-                  {prediction && Object.values(prediction)[0]}
+                  {prediction && Object.values(prediction)[0].classification}
                 </p>
               </div>
+              <button
+                onClick={openSolutionModal}
+                className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+              >
+                View Solution
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Solution Modal */}
+      {isSolutionModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
+          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-xl font-bold text-gray-800">Solution</h2>
+              <button
+                onClick={closeSolutionModal}
+                className="text-gray-400 hover:text-gray-600"
+              >
+                ✖
+              </button>
+            </div>
+            <div className="mt-4">
+              {prediction && (
+                <div className="space-y-4">
+                  <p className="text-base text-gray-700">
+                    <strong>Disposal:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .disposal
+                    }
+                  </p>
+                  <p className="text-base text-gray-700">
+                    <strong>Benefits:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .benefits
+                    }
+                  </p>
+                  <p className="text-base text-gray-700">
+                    <strong>Tips:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .tips
+                    }
+                  </p>
+                  <p className="text-base text-gray-700">
+                    <strong>Impact:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .impact
+                    }
+                  </p>
+                  <p className="text-base text-gray-700">
+                    <strong>Alternatives:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .alternatives
+                    }
+                  </p>
+                  <p className="text-base text-gray-700">
+                    <strong>Additional Resources:</strong>{" "}
+                    {
+                      prediction[Object.keys(prediction)[0]].general_solution
+                        .additional_resources
+                    }
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

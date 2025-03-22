@@ -5,7 +5,11 @@ const WasteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  location: {
+  longitude: {
+    type: String,
+    required: true,
+  },
+  latitude: {
     type: String,
     required: true,
   },

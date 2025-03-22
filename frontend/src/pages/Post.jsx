@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 import { MdDelete, MdOutlineChangeCircle } from "react-icons/md";
 import { ImSpinner8 } from "react-icons/im";
@@ -12,7 +11,8 @@ const Post = () => {
   const [formData, setFormData] = useState({
     image: null,
     type: "",
-    location: "",
+    latitude: "",
+    longitude: "",
     contact: "",
     description: "",
   });
@@ -23,6 +23,33 @@ const Post = () => {
 
   const user = JSON.parse(localStorage.getItem("User"));
   const userId = user?.user?._id;
+
+  // Fetch user's current location (latitude and longitude)
+  const fetchLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prev) => ({
+            ...prev,
+            latitude: latitude.toString(),
+            longitude: longitude.toString(),
+          }));
+        },
+        (error) => {
+          console.error("Error fetching location:", error);
+        }
+      );
+    } else {
+      console.error("Geolocation is not supported by this browser.");
+    }
+  };
+
+  useEffect(() => {
+    if (showModal && !isEdit) {
+      fetchLocation(); // Fetch location when modal opens for adding new waste
+    }
+  }, [showModal, isEdit]);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -49,7 +76,12 @@ const Post = () => {
   };
 
   const handleSave = async () => {
-    if (!formData.type || !formData.location || !formData.contact) {
+    if (
+      !formData.type ||
+      !formData.latitude ||
+      !formData.longitude ||
+      !formData.contact
+    ) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -65,7 +97,8 @@ const Post = () => {
       const data = {
         userId,
         typeOfWaste: formData.type,
-        location: formData.location,
+        latitude: formData.latitude,
+        longitude: formData.longitude,
         contactNumber: formData.contact,
         description: formData.description,
         image: imageUrl,
@@ -91,7 +124,8 @@ const Post = () => {
       setFormData({
         image: null,
         type: "",
-        location: "",
+        latitude: "",
+        longitude: "",
         contact: "",
         description: "",
       });
@@ -136,7 +170,8 @@ const Post = () => {
     setFormData({
       image: waste.image,
       type: waste.typeOfWaste,
-      location: waste.location,
+      latitude: waste.latitude,
+      longitude: waste.longitude,
       contact: waste.contactNumber,
       description: waste.description,
     });
@@ -150,7 +185,7 @@ const Post = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-between items-center p-4 text-[20px] font-serif">
+      <div className="flex justify-between items-center p-4 text-[20px] font-serif ">
         <button
           onClick={() => {
             setShowModal(true);
@@ -158,7 +193,8 @@ const Post = () => {
             setFormData({
               image: null,
               type: "",
-              location: "",
+              latitude: "",
+              longitude: "",
               contact: "",
               description: "",
             });
@@ -200,7 +236,10 @@ const Post = () => {
                 )}
                 <h3 className="text-lg font-bold">{waste.typeOfWaste}</h3>
                 <p className="text-sm text-gray-700">
-                  Location: {waste.location}
+                  Latitude: {waste.latitude}
+                </p>
+                <p className="text-sm text-gray-700">
+                  Longitude: {waste.longitude}
                 </p>
                 <p className="text-sm text-gray-700">
                   Contact: {waste.contactNumber}
@@ -230,7 +269,7 @@ const Post = () => {
 
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[400px]">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[400px] mt-20 h-[400px] overflow-auto">
             <h2 className="text-2xl font-bold mb-4">
               {isEdit ? "Edit Waste" : "Add Waste"}
             </h2>
@@ -270,15 +309,31 @@ const Post = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Location</label>
+                <label className="block text-sm font-bold mb-2">Latitude</label>
                 <input
                   type="text"
-                  name="location"
-                  value={formData.location}
+                  name="latitude"
+                  value={formData.latitude}
                   onChange={handleChange}
-                  placeholder="Enter location"
+                  placeholder="Fetching latitude..."
                   className="w-full border p-2 rounded"
                   required
+                  readOnly // Make the latitude field read-only
+                />
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-bold mb-2">
+                  Longitude
+                </label>
+                <input
+                  type="text"
+                  name="longitude"
+                  value={formData.longitude}
+                  onChange={handleChange}
+                  placeholder="Fetching longitude..."
+                  className="w-full border p-2 rounded"
+                  required
+                  readOnly // Make the longitude field read-only
                 />
               </div>
               <div className="mb-4">
