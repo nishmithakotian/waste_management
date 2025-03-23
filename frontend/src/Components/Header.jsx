@@ -13,9 +13,7 @@ const Header = () => {
     <div className="relative">
       {/* Header Bar */}
       <div className="flex justify-between items-center p-4 text-[15px] md:text-[20px] font-serif bg-[#1A2A4F] sticky top-0 h-[80px] z-50 shadow-md">
-        <div className="text-2xl font-bold text-[#64FFDA] ml-4">
-          Waste Classifier
-        </div>
+        <div className="text-2xl font-bold text-[#64FFDA] ml-4">Waste Wise</div>
 
         {/* Desktop Links */}
         <div className="hidden md:flex gap-6 mr-10">

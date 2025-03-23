@@ -148,7 +148,7 @@ const AllWaste = () => {
           <ImSpinner8 size={50} color="#64FFDA" className="animate-spin" />
         </div>
       ) : (
-        <div className="p-4 md:p-6 bg-[#0A192F]">
+        <div className="p-4 md:p-6 bg-[#0A192F] h-screen">
           <h1 className="text-lg md:text-2xl font-bold text-[#64FFDA] mb-6">
             All Waste
           </h1>

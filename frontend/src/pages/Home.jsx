@@ -56,7 +56,7 @@ const Home = () => {
             loop
             muted
           />
-          <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center">
+          {/* <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-50 flex flex-col justify-center items-center">
             <h1 className="text-white text-6xl font-bold mb-4 text-center drop-shadow-lg">
               Welcome to WasteWise
             </h1>
@@ -70,7 +70,7 @@ const Home = () => {
             >
               Get Started
             </a>
-          </div>
+          </div> */}
         </div>
 
         {/* Features Section */}
