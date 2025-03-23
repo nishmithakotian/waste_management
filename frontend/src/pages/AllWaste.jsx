@@ -160,14 +160,6 @@ const AllWaste = () => {
                   key={waste._id}
                   className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full md:w-[400px] h-auto relative" // Added relative positioning
                 >
-                  {/* Green Tick for "Cleaned" Status */}
-                  {waste.status == "Cleaned" && (
-                    <FaCheckCircle
-                      size={30}
-                      className="text-green-500 absolute top-4 right-4" // Positioned at top-right
-                    />
-                  )}
-
                   {waste.image && (
                     <img
                       src={waste.image}
@@ -192,6 +184,13 @@ const AllWaste = () => {
                     {waste.description ? waste.description : "N/A"}
                   </p>
                   <div className="flex justify-end items-center gap-4 mt-4">
+                    {/* Green Tick for "Cleaned" Status */}
+                    {waste.status == "Cleaned" && (
+                      <FaCheckCircle
+                        size={30}
+                        className="text-green-500 " // Positioned at top-right
+                      />
+                    )}
                     <MdLocationOn
                       size={30}
                       className="cursor-pointer text-[#CCD6F6] hover:text-[#64FFDA]"
