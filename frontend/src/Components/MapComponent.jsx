@@ -3,7 +3,8 @@ import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import axios from "axios";
 import L from "leaflet";
-import { IoIosCall } from "react-icons/io";
+import { IoIosCall, IoMdClose } from "react-icons/io";
+import { FaMapMarkerAlt } from "react-icons/fa";
 
 const redIcon = new L.Icon({
   iconUrl:
@@ -88,56 +89,62 @@ function MapComponent({ location }) {
       {showModal ? null : (
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-4"
+          className="bg-[#64FFDA] hover:bg-[#52D1C2] text-[#0A192F] font-bold py-2 px-4 rounded mt-4 transition duration-300"
         >
           See Govt. Offices
         </button>
       )}
       {showModal && (
-        <div className="bg-white p-4 rounded-lg overflow-auto min-h-screen w-full sm:w-3/4 md:w-2/3 mx-auto">
-          <div className="flex flex-col items-center gap-4">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-[#1A2A4F] rounded-lg shadow-xl w-full max-w-4xl max-h-[90vh] overflow-auto relative">
+            {/* Close Button */}
             <button
               onClick={() => setShowModal(false)}
-              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-6 rounded"
+              className="absolute top-4 right-4 text-[#CCD6F6] hover:text-[#64FFDA] transition duration-300"
             >
-              Close
+              <IoMdClose size={24} />
             </button>
-            <div className="flex flex-wrap justify-center gap-6 mt-6">
-              {pharmacies.map((item, index) => (
-                <div
-                  key={index}
-                  className="bg-white shadow-xl p-4 rounded-lg flex flex-col items-center w-full sm:w-60 md:w-72"
-                >
-                  <img
-                    className="h-40 w-full object-cover rounded-lg"
-                    src="https://img.freepik.com/premium-vector/shopping-store-cartoon_18591-44033.jpg"
-                    alt="Store"
-                  />
-                  <h1 className="mt-3 text-center font-bold">
-                    {item.name || "Unknown"}
-                  </h1>
-                  <p className="text-center text-sm mt-2">
-                    Address: {item.address || "Not available"}
-                  </p>
-                  <p className="text-center text-sm">
-                    Distance: {item.distance || 0} meters
-                  </p>
-                  <p className="text-center text-sm">
-                    Contact: {item.phone_number || "Not available"}
-                  </p>
-                  {item.phone_number && (
-                    <button
-                      onClick={() =>
-                        (window.location.href = `tel:${item.phone_number}`)
-                      }
-                      className="bg-green-500 hover:bg-green-400 text-white font-bold py-2 px-4 rounded mt-3 flex items-center justify-center gap-2"
-                    >
-                      <IoIosCall size={20} />
-                      Call
-                    </button>
-                  )}
-                </div>
-              ))}
+            <div className="p-6">
+              <h2 className="text-2xl font-bold text-[#64FFDA] mb-6">
+                Nearby Govt. Offices
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pharmacies.map((item, index) => (
+                  <div
+                    key={index}
+                    className="bg-[#112240] p-4 rounded-lg shadow-lg hover:shadow-xl transition duration-300"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <FaMapMarkerAlt className="text-[#64FFDA]" size={20} />
+                      <h1 className="text-lg font-semibold text-[#CCD6F6]">
+                        {item.name || "Unknown"}
+                      </h1>
+                    </div>
+                    <p className="text-sm text-[#8892B0]">
+                      <strong>Address:</strong>{" "}
+                      {item.address || "Not available"}
+                    </p>
+                    <p className="text-sm text-[#8892B0]">
+                      <strong>Distance:</strong> {item.distance || 0} meters
+                    </p>
+                    <p className="text-sm text-[#8892B0]">
+                      <strong>Contact:</strong>{" "}
+                      {item.phone_number || "Not available"}
+                    </p>
+                    {item.phone_number && (
+                      <button
+                        onClick={() =>
+                          (window.location.href = `tel:${item.phone_number}`)
+                        }
+                        className="bg-[#64FFDA] hover:bg-[#52D1C2] text-[#0A192F] font-bold py-2 px-4 rounded mt-4 flex items-center justify-center gap-2 transition duration-300"
+                      >
+                        <IoIosCall size={20} />
+                        Call
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </div>

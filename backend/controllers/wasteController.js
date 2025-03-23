@@ -11,7 +11,8 @@ const addWaste = async (req, res) => {
     contactNumber,
     image,
     description,
-    user,
+    userID,
+    status,
   } = req.body;
 
   try {
@@ -29,7 +30,8 @@ const addWaste = async (req, res) => {
       contactNumber,
       image,
       description,
-      user,
+      userID,
+      status,
     });
     await newWaste.save();
 
@@ -75,13 +77,14 @@ const deleteWaste = async (req, res) => {
 // Update Waste
 const updateWaste = async (req, res) => {
   const { wasteId } = req.params;
-  const { typeOfWaste, longitude, latitude, contactNumber, image } = req.body;
+  const { typeOfWaste, longitude, latitude, contactNumber, image, status } =
+    req.body;
 
   try {
     // Find and update the waste entry
     const updatedWaste = await Waste.findByIdAndUpdate(
       wasteId,
-      { typeOfWaste, longitude, latitude, contactNumber, image },
+      { typeOfWaste, longitude, latitude, contactNumber, image, status },
       { new: true }
     );
 

@@ -15,6 +15,7 @@ const Post = () => {
     longitude: "",
     contact: "",
     description: "",
+    status: "Reported", // Default status
   });
   const [isUploading, setIsUploading] = useState(false);
   const [wastes, setWastes] = useState([]);
@@ -23,6 +24,23 @@ const Post = () => {
 
   const user = JSON.parse(localStorage.getItem("User"));
   const userId = user?.user?._id;
+
+  // Waste types for dropdown
+  const wasteTypes = [
+    "Organic Waste (food scraps, leaves)",
+    "Plastic Waste (bottles, wrappers, containers)",
+    "Glass Waste (broken glass, bottles, jars)",
+    "Metal Waste (cans, aluminum, iron scraps)",
+    "Paper Waste (newspapers, cardboard, books)",
+    "Electronic Waste (E-Waste) (mobile phones, wires, batteries)",
+    "Medical Waste (masks, syringes, gloves)",
+    "Hazardous Waste (chemicals, paints, pesticides)",
+    "Textile Waste (old clothes, fabric scraps)",
+    "Construction Waste (bricks, cement, wood)",
+  ];
+
+  // Status options for dropdown
+  const statusOptions = ["Reported", "In Progress", "Resolved"];
 
   // Fetch user's current location (latitude and longitude)
   const fetchLocation = () => {
@@ -76,12 +94,7 @@ const Post = () => {
   };
 
   const handleSave = async () => {
-    if (
-      !formData.type ||
-      !formData.latitude ||
-      !formData.longitude ||
-      !formData.contact
-    ) {
+    if (!formData.type || !formData.contact) {
       alert("Please fill in all required fields.");
       return;
     }
@@ -101,8 +114,9 @@ const Post = () => {
         longitude: formData.longitude,
         contactNumber: formData.contact,
         description: formData.description,
+        status: formData.status, // Include status
         image: imageUrl,
-        user: userId,
+        userID: userId,
       };
 
       if (isEdit) {
@@ -128,6 +142,7 @@ const Post = () => {
         longitude: "",
         contact: "",
         description: "",
+        status: "Reported", // Reset status
       });
       getUser();
     } catch (error) {
@@ -174,6 +189,7 @@ const Post = () => {
       longitude: waste.longitude,
       contact: waste.contactNumber,
       description: waste.description,
+      status: waste.status || "Reported", // Default to "Reported" if status is missing
     });
     setShowModal(true);
   };
@@ -185,7 +201,7 @@ const Post = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-between items-center p-4 text-[20px] font-serif ">
+      <div className="flex justify-between items-center p-4 text-[20px] font-serif bg-[#0A192F]">
         <button
           onClick={() => {
             setShowModal(true);
@@ -197,9 +213,10 @@ const Post = () => {
               longitude: "",
               contact: "",
               description: "",
+              status: "Reported", // Reset status
             });
           }}
-          className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="bg-[#64FFDA] text-[#0A192F] px-4 py-2 rounded hover:bg-[#52D1C2] transition duration-300"
         >
           Add Waste
         </button>
@@ -207,25 +224,25 @@ const Post = () => {
 
       {/* Spinner while loading */}
       {spinner ? (
-        <div className="flex justify-center items-center h-[80vh]">
+        <div className="flex justify-center items-center h-[80vh] bg-[#0A192F]">
           <ImSpinner8
             size={50}
-            color="blue"
+            color="#64FFDA"
             className="animate-spin mt-[100px]"
           />
         </div>
       ) : (
         // Show content after data is loaded
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 bg-[#0A192F]">
           {wastes.length === 0 ? (
-            <div className="text-center text-xl font-bold">
+            <div className="text-center text-xl font-bold text-[#CCD6F6] h-screen">
               No posts uploaded.
             </div>
           ) : (
             wastes.map((waste) => (
               <div
                 key={waste._id}
-                className="bg-white rounded-lg shadow-lg p-4 border border-gray-200 w-full sm:w-[400px] h-auto"
+                className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full sm:w-[400px] h-auto"
               >
                 {waste.image && (
                   <img
@@ -234,30 +251,29 @@ const Post = () => {
                     className="h-40 w-full object-cover rounded-md mb-4"
                   />
                 )}
-                <h3 className="text-lg font-bold">{waste.typeOfWaste}</h3>
-                <p className="text-sm text-gray-700">
-                  Latitude: {waste.latitude}
+                <h3 className="text-lg font-bold text-[#64FFDA]">
+                  {waste.typeOfWaste}
+                </h3>
+                <p className="text-sm text-[#CCD6F6]">
+                  <strong>Status:</strong> {waste.status}
                 </p>
-                <p className="text-sm text-gray-700">
-                  Longitude: {waste.longitude}
-                </p>
-                <p className="text-sm text-gray-700">
-                  Contact: {waste.contactNumber}
+                <p className="text-sm text-[#CCD6F6]">
+                  <strong>Contact:</strong> {waste.contactNumber}
                 </p>
                 {waste.description && (
-                  <p className="text-sm text-gray-700 mt-2">
+                  <p className="text-sm text-[#CCD6F6] mt-2">
                     {waste.description}
                   </p>
                 )}
                 <div className="flex justify-end items-center gap-4 mt-4">
                   <MdDelete
                     size={30}
-                    className="cursor-pointer hover:text-red-400 hover:scale-105"
+                    className="cursor-pointer text-[#CCD6F6] hover:text-red-400 hover:scale-105"
                     onClick={() => handleDel(waste._id)}
                   />
                   <MdOutlineChangeCircle
                     size={30}
-                    className="cursor-pointer hover:text-violet-400 hover:scale-105"
+                    className="cursor-pointer text-[#CCD6F6] hover:text-violet-400 hover:scale-105"
                     onClick={() => handleEdit(waste)}
                   />
                 </div>
@@ -268,14 +284,14 @@ const Post = () => {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full sm:w-[400px] mt-20 h-[400px] overflow-auto">
-            <h2 className="text-2xl font-bold mb-4">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4 z-50">
+          <div className="bg-[#1A2A4F] p-6 rounded-lg shadow-lg w-full sm:w-[500px] max-h-[90vh] overflow-auto">
+            <h2 className="text-2xl font-bold text-[#64FFDA] mb-4">
               {isEdit ? "Edit Waste" : "Add Waste"}
             </h2>
             <form>
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
                   Upload Image
                 </label>
                 <input
@@ -283,7 +299,7 @@ const Post = () => {
                   name="image"
                   accept="image/*"
                   onChange={handleChange}
-                  className="w-full"
+                  className="w-full text-[#CCD6F6]"
                 />
                 {formData.image && typeof formData.image === "string" && (
                   <img
@@ -295,61 +311,61 @@ const Post = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
                   Type of Waste
                 </label>
-                <input
-                  type="text"
+                <select
                   name="type"
                   value={formData.type}
                   onChange={handleChange}
-                  placeholder="e.g., Plastic, Metal"
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
                   required
-                />
+                >
+                  <option value="">Select Waste Type</option>
+                  {wasteTypes.map((type, index) => (
+                    <option key={index} value={type}>
+                      {type}
+                    </option>
+                  ))}
+                </select>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Latitude</label>
-                <input
-                  type="text"
-                  name="latitude"
-                  value={formData.latitude}
-                  onChange={handleChange}
-                  placeholder="Fetching latitude..."
-                  className="w-full border p-2 rounded"
-                  required
-                  readOnly // Make the latitude field read-only
-                />
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
-                  Longitude
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+                  Status
                 </label>
-                <input
-                  type="text"
-                  name="longitude"
-                  value={formData.longitude}
+                <select
+                  name="status"
+                  value={formData.status}
                   onChange={handleChange}
-                  placeholder="Fetching longitude..."
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
                   required
-                  readOnly // Make the longitude field read-only
-                />
+                >
+                  {statusOptions.map((status, index) => (
+                    <option key={index} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">Contact</label>
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+                  Contact
+                </label>
                 <input
                   type="text"
                   name="contact"
                   value={formData.contact}
                   onChange={handleChange}
                   placeholder="Enter contact details"
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
                   required
                 />
               </div>
+
               <div className="mb-4">
-                <label className="block text-sm font-bold mb-2">
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
                   Description (Optional)
                 </label>
                 <textarea
@@ -357,20 +373,20 @@ const Post = () => {
                   value={formData.description}
                   onChange={handleChange}
                   placeholder="Add any additional details"
-                  className="w-full border p-2 rounded"
+                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
                 />
               </div>
             </form>
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setShowModal(false)}
-                className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-700"
+                className="bg-[#2C3E50] text-[#CCD6F6] px-4 py-2 rounded hover:bg-[#1A2A4F] transition duration-300"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                className="bg-[#64FFDA] text-[#0A192F] px-4 py-2 rounded hover:bg-[#52D1C2] transition duration-300"
                 disabled={isUploading}
               >
                 {isUploading ? "Saving..." : isEdit ? "Update" : "Save"}

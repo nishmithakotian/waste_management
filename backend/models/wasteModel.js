@@ -24,9 +24,12 @@ const WasteSchema = new mongoose.Schema({
   description: {
     type: String,
   },
-  user: {
+  userID: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+  },
+  status: {
+    type: String,
   },
   createdAt: {
     type: Date,

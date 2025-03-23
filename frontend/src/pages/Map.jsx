@@ -29,15 +29,18 @@ const Map = () => {
   return (
     <>
       <Header />
-      <div className="h-screen w-full flex flex-col items-center px-4">
-        <h1 className="font-bold m-5 text-3xl sm:text-5xl text-white text-center">
-          Nearby Stores
+      <div className="h-screen w-full flex flex-col items-center px-4 bg-[#0A192F]">
+        <h1 className="font-bold m-5 text-3xl sm:text-5xl text-[#64FFDA] text-center">
+          Nearby Offices
         </h1>
         {show ? (
           <MapComponent location={location} />
         ) : (
           <div className="flex justify-center items-center h-full">
-            <AiOutlineLoading3Quarters className="animate-spin" size={50} />
+            <AiOutlineLoading3Quarters
+              className="animate-spin text-[#64FFDA]"
+              size={50}
+            />
           </div>
         )}
       </div>

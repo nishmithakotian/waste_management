@@ -67,12 +67,12 @@ const Upload = () => {
       <Header />
 
       {/* Upload Section */}
-      <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-[#0A192F] p-4">
         <div className="text-center">
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">
+          <h1 className="text-2xl sm:text-3xl font-bold text-[#64FFDA]">
             Waste Classification
           </h1>
-          <p className="text-sm sm:text-base text-gray-600 mt-2">
+          <p className="text-sm sm:text-base text-[#CCD6F6] mt-2">
             Upload an image to classify waste as biodegradable or
             non-biodegradable.
           </p>
@@ -80,30 +80,42 @@ const Upload = () => {
 
         {/* Drag-and-Drop File Upload */}
         <div
-          className="w-full max-w-md mt-6 p-8 border-2 border-dashed border-blue-400 rounded-lg bg-blue-50 text-center cursor-pointer hover:bg-blue-100 transition duration-300 ease-in-out"
+          className="w-full max-w-md mt-6 p-8 border-2 border-dashed border-[#64FFDA] rounded-lg bg-[#1A2A4F] text-center cursor-pointer hover:bg-[#112240] transition duration-300 ease-in-out"
           onDragOver={handleDragOver}
           onDrop={handleDrop}
         >
           <label htmlFor="imageUpload" className="cursor-pointer">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-12 w-12 mx-auto text-blue-500"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M12 4v16m8-8H4"
+            {selectedImage ? (
+              <img
+                src={URL.createObjectURL(selectedImage)}
+                alt="Selected"
+                className="w-full h-48 object-cover rounded-lg shadow-lg"
               />
-            </svg>
-            <p className="mt-2 text-sm text-gray-600">
-              Drag and drop an image here or{" "}
-              <span className="text-blue-600 font-medium">click to upload</span>
-              .
-            </p>
+            ) : (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-12 w-12 mx-auto text-[#64FFDA]"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M12 4v16m8-8H4"
+                  />
+                </svg>
+                <p className="mt-2 text-sm text-[#CCD6F6]">
+                  Drag and drop an image here or{" "}
+                  <span className="text-[#64FFDA] font-medium">
+                    click to upload
+                  </span>
+                  .
+                </p>
+              </>
+            )}
           </label>
           <input
             id="imageUpload"
@@ -114,21 +126,10 @@ const Upload = () => {
           />
         </div>
 
-        {/* Image Preview */}
-        {selectedImage && (
-          <div className="mt-6 w-48 h-48 sm:w-64 sm:h-64 border-2 border-dashed border-blue-400 rounded-lg overflow-hidden shadow-lg">
-            <img
-              src={URL.createObjectURL(selectedImage)}
-              alt="Selected"
-              className="w-full h-full object-cover"
-            />
-          </div>
-        )}
-
         {/* Submit Button */}
         <button
           onClick={handleSubmit}
-          className="mt-6 px-6 py-2 bg-green-500 text-white rounded-lg shadow-lg hover:bg-green-600 transition duration-300 ease-in-out text-sm sm:text-base"
+          className="mt-6 px-6 py-2 bg-[#64FFDA] text-[#0A192F] rounded-lg shadow-lg hover:bg-[#52D1C2] transition duration-300 ease-in-out text-sm sm:text-base font-semibold"
         >
           {loading ? (
             <ImSpinner8 size={20} className="animate-spin" />
@@ -141,12 +142,12 @@ const Upload = () => {
       {/* Prediction Modal */}
       {isPredictionModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+          <div className="bg-[#1A2A4F] rounded-lg shadow-xl w-full max-w-md p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800">Prediction</h2>
+              <h2 className="text-xl font-bold text-[#64FFDA]">Prediction</h2>
               <button
                 onClick={closePredictionModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-[#CCD6F6] hover:text-[#64FFDA]"
               >
                 ✖
               </button>
@@ -160,18 +161,18 @@ const Upload = () => {
                 />
               )}
               <div className="mt-4 text-center">
-                <p className="text-base text-gray-700">
+                <p className="text-base text-[#CCD6F6]">
                   <strong>Type:</strong>{" "}
                   {prediction && Object.keys(prediction)[0]}
                 </p>
-                <p className="text-base text-gray-700">
+                <p className="text-base text-[#CCD6F6]">
                   <strong>Category:</strong>{" "}
                   {prediction && Object.values(prediction)[0].classification}
                 </p>
               </div>
               <button
                 onClick={openSolutionModal}
-                className="mt-4 w-full px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition duration-300 ease-in-out"
+                className="mt-4 w-full px-4 py-2 bg-[#64FFDA] text-[#0A192F] rounded-lg hover:bg-[#52D1C2] transition duration-300 ease-in-out font-semibold"
               >
                 View Solution
               </button>
@@ -183,55 +184,55 @@ const Upload = () => {
       {/* Solution Modal */}
       {isSolutionModalOpen && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 px-4">
-          <div className="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+          <div className="bg-[#1A2A4F] rounded-lg shadow-xl w-full max-w-md p-6">
             <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold text-gray-800">Solution</h2>
+              <h2 className="text-xl font-bold text-[#64FFDA]">Solution</h2>
               <button
                 onClick={closeSolutionModal}
-                className="text-gray-400 hover:text-gray-600"
+                className="text-[#CCD6F6] hover:text-[#64FFDA]"
               >
                 ✖
               </button>
             </div>
             <div className="mt-4">
               {prediction && (
-                <div className="space-y-4">
-                  <p className="text-base text-gray-700">
+                <div className="space-y-4 text-[#CCD6F6]">
+                  <p className="text-base">
                     <strong>Disposal:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
                         .disposal
                     }
                   </p>
-                  <p className="text-base text-gray-700">
+                  <p className="text-base">
                     <strong>Benefits:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
                         .benefits
                     }
                   </p>
-                  <p className="text-base text-gray-700">
+                  <p className="text-base">
                     <strong>Tips:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
                         .tips
                     }
                   </p>
-                  <p className="text-base text-gray-700">
+                  <p className="text-base">
                     <strong>Impact:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
                         .impact
                     }
                   </p>
-                  <p className="text-base text-gray-700">
+                  <p className="text-base">
                     <strong>Alternatives:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
                         .alternatives
                     }
                   </p>
-                  <p className="text-base text-gray-700">
+                  <p className="text-base">
                     <strong>Additional Resources:</strong>{" "}
                     {
                       prediction[Object.keys(prediction)[0]].general_solution
