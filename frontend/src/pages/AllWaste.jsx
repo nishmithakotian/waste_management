@@ -3,6 +3,7 @@ import axios from "axios";
 import { MdLocationOn } from "react-icons/md";
 import { IoCallOutline } from "react-icons/io5";
 import { ImSpinner8 } from "react-icons/im";
+import { FaCheckCircle } from "react-icons/fa"; // Import the green tick icon
 import Header from "../Components/Header";
 
 const AllWaste = () => {
@@ -148,7 +149,7 @@ const AllWaste = () => {
           <ImSpinner8 size={50} color="#64FFDA" className="animate-spin" />
         </div>
       ) : (
-        <div className="p-4 md:p-6 bg-[#0A192F] h-screen">
+        <div className="p-4 md:p-6 bg-[#0A192F] h-screen overflow-auto">
           <h1 className="text-lg md:text-2xl font-bold text-[#64FFDA] mb-6">
             All Waste
           </h1>
@@ -157,8 +158,16 @@ const AllWaste = () => {
               filteredWastes.map((waste) => (
                 <div
                   key={waste._id}
-                  className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full md:w-[400px] h-auto"
+                  className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full md:w-[400px] h-auto relative" // Added relative positioning
                 >
+                  {/* Green Tick for "Cleaned" Status */}
+                  {waste.status == "Cleaned" && (
+                    <FaCheckCircle
+                      size={30}
+                      className="text-green-500 absolute top-4 right-4" // Positioned at top-right
+                    />
+                  )}
+
                   {waste.image && (
                     <img
                       src={waste.image}

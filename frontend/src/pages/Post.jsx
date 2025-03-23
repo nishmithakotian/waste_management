@@ -201,7 +201,7 @@ const Post = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-between items-center p-4 text-[20px] font-serif bg-[#0A192F] ">
+      <div className="flex justify-between items-center p-4 text-[20px] font-serif bg-[#0A192F] h0sc ">
         <button
           onClick={() => {
             setShowModal(true);
@@ -233,7 +233,7 @@ const Post = () => {
         </div>
       ) : (
         // Show content after data is loaded
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 bg-[#0A192F] h-screen">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 bg-[#0A192F] min-h-screen">
           {wastes.length === 0 ? (
             <div className="text-center text-xl font-bold text-[#CCD6F6] h-screen">
               No posts uploaded.
