@@ -106,7 +106,7 @@ const updateWaste = async (req, res) => {
 const getAllWastes = async (req, res) => {
   try {
     // Fetch all wastes
-    const wastes = await Waste.find().populate("user");
+    const wastes = await Waste.find().populate("userID");
     res.status(200).json({ wastes });
   } catch (error) {
     res

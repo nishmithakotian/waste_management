@@ -201,7 +201,7 @@ const Post = () => {
   return (
     <>
       <Header />
-      <div className="flex justify-between items-center p-4 text-[20px] font-serif bg-[#0A192F]">
+      <div className="flex justify-between items-center p-4 text-[20px] font-serif bg-[#0A192F] ">
         <button
           onClick={() => {
             setShowModal(true);
@@ -233,7 +233,7 @@ const Post = () => {
         </div>
       ) : (
         // Show content after data is loaded
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 bg-[#0A192F]">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-4 sm:p-6 bg-[#0A192F] h-screen">
           {wastes.length === 0 ? (
             <div className="text-center text-xl font-bold text-[#CCD6F6] h-screen">
               No posts uploaded.
@@ -242,7 +242,7 @@ const Post = () => {
             wastes.map((waste) => (
               <div
                 key={waste._id}
-                className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full sm:w-[400px] h-auto"
+                className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full sm:w-[400px] h-[400px]"
               >
                 {waste.image && (
                   <img
@@ -284,7 +284,7 @@ const Post = () => {
       )}
 
       {showModal && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 p-4 z-50">
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-sm p-4 z-50">
           <div className="bg-[#1A2A4F] p-6 rounded-lg shadow-lg w-full sm:w-[500px] max-h-[90vh] overflow-auto">
             <h2 className="text-2xl font-bold text-[#64FFDA] mb-4">
               {isEdit ? "Edit Waste" : "Add Waste"}
