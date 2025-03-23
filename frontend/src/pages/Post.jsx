@@ -40,7 +40,7 @@ const Post = () => {
   ];
 
   // Status options for dropdown
-  const statusOptions = ["Reported", "In Progress", "Resolved"];
+  const statusOptions = ["Reported", "In Progress", "Cleaned"];
 
   // Fetch user's current location (latitude and longitude)
   const fetchLocation = () => {

@@ -28,7 +28,7 @@ const AllWaste = () => {
   ];
 
   // Status options for filter dropdown
-  const statusOptions = ["Reported", "In Progress", "Resolved"];
+  const statusOptions = ["Reported", "In Progress", "Cleaned"];
 
   // Fetch all waste data
   const fetchAllWaste = async () => {
