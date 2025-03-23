@@ -92,7 +92,6 @@ const updateWaste = async (req, res) => {
       return res.status(404).json({ message: "Waste not found" });
     }
 
-    await updateWaste.save();
     res
       .status(200)
       .json({ message: "Waste updated successfully", waste: updatedWaste });
