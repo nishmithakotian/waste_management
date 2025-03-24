@@ -27,13 +27,13 @@ const Header = () => {
             to="/post"
             className="text-[#CCD6F6] hover:text-[#64FFDA] transition"
           >
-            Post
+            Waste report
           </Link>
           <Link
             to="/allWaste"
             className="text-[#CCD6F6] hover:text-[#64FFDA] transition"
           >
-            All Waste
+            Waste to worth
           </Link>
           <Link
             to="/upload"
@@ -89,14 +89,14 @@ const Header = () => {
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition"
               onClick={toggleMenu}
             >
-              Post
+              Waste report
             </Link>
             <Link
               to="/allWaste"
               className="text-[#CCD6F6] hover:text-[#64FFDA] transition"
               onClick={toggleMenu}
             >
-              All Waste
+              Waste to worth
             </Link>
             <Link
               to="/upload"
