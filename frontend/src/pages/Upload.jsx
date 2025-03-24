@@ -36,7 +36,7 @@ const Upload = () => {
 
     try {
       const response = await axios.post(
-        "http://127.0.0.1:8000/waste_classification",
+        "https://citywastebackend.onrender.com/waste_classification",
         formData
       );
       setPrediction(response.data.prediction);
