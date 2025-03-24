@@ -1,6 +1,6 @@
 import React from "react";
 import bgVideo from "../assets/bgVideo.mp4"; // Replace with your video file
-import Header from "../components/Header";
+import Header from "../Components/Header";
 import {
   AiOutlineCloudUpload,
   AiOutlineGlobal,
