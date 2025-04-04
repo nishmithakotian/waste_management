@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import axios from "axios";
 import { ImSpinner8 } from "react-icons/im";
 import Header from "../Components/Header";
@@ -32,12 +32,17 @@ const Upload = () => {
     setLoading(true);
 
     const formData = new FormData();
-    formData.append("image", selectedImage);
+    formData.append("file", selectedImage);
 
     try {
       const response = await axios.post(
-        "https://citywastebackend.onrender.com/waste_classification",
-        formData
+        "https://waste-model.onrender.com/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
       );
       setPrediction(response.data.prediction);
       setLoading(false);
