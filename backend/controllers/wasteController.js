@@ -1,5 +1,26 @@
 const Waste = require("../models/wasteModel");
 const User = require("../models/userModel");
+const axios = require("axios");
+
+const getAddressFromOSM = async (latitude, longitude) => {
+  const url = `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`;
+  try {
+    const response = await axios.get(url, {
+      headers: {
+        "User-Agent": "waste-tracker/1.0 (your@email.com)",
+      },
+    });
+    const address = response.data.address;
+    return (
+      (address.suburb || address.neighbourhood || '') + ", " +
+      (address.city || address.town || address.state || '') + ", " +
+      (address.country || '')
+    );
+  } catch (error) {
+    console.error("Error fetching address:", error.message);
+    return "Unknown Location";
+  }
+};
 
 // Add Waste
 const addWaste = async (req, res) => {
@@ -22,11 +43,14 @@ const addWaste = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
+    const location = await getAddressFromOSM(latitude, longitude);
+
     // Create a new waste entry
     const newWaste = new Waste({
       typeOfWaste,
       longitude,
       latitude,
+      location,
       contactNumber,
       image,
       description,

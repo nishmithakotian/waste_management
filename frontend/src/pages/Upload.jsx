@@ -37,6 +37,7 @@ const Upload = () => {
     try {
       const response = await axios.post(
         "https://waste-model.onrender.com/upload",
+        // "http://localhost:3000/upload",
         formData,
         {
           headers: {

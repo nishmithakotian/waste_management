@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
 import { MdDelete, MdOutlineChangeCircle } from "react-icons/md";
 import { ImSpinner8 } from "react-icons/im";
@@ -19,7 +19,7 @@ const Post = () => {
   });
   const [isUploading, setIsUploading] = useState(false);
   const [wastes, setWastes] = useState([]);
-  const [loading, setLoading] = useState(false);
+  //const [loading, setLoading] = useState(false);
   const [spinner, setSpinner] = useState(true);
 
   const user = JSON.parse(localStorage.getItem("User"));
@@ -98,7 +98,7 @@ const Post = () => {
       alert("Please fill in all required fields.");
       return;
     }
-    setLoading(true);
+    //setLoading(true);
     setIsUploading(true);
 
     try {
@@ -150,7 +150,7 @@ const Post = () => {
       alert("Failed to save data. Please try again.");
     } finally {
       setIsUploading(false);
-      setLoading(false);
+      //setLoading(false);
     }
   };
 

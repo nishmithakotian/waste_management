@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
 import { MdLocationOn } from "react-icons/md";
 import { IoCallOutline } from "react-icons/io5";
 import { ImSpinner8 } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa"; // Import the green tick icon
 import Header from "../Components/Header";
+
 
 const AllWaste = () => {
   const [wastes, setWastes] = useState([]);
@@ -13,6 +14,8 @@ const AllWaste = () => {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+
+  
 
   // Waste types for filter dropdown
   const wasteTypes = [
@@ -36,7 +39,10 @@ const AllWaste = () => {
     try {
       const { data } = await axios.get(
         "https://waste-management-0kpq.onrender.com/waste/all"
+
       );
+      // Fetch addresses for each waste based on latitude/longitude
+
       setWastes(data.wastes);
       setFilteredWastes(data.wastes); // Show all wastes by default
       setLoading(false);
@@ -196,9 +202,7 @@ const AllWaste = () => {
                       className="cursor-pointer text-[#CCD6F6] hover:text-[#64FFDA]"
                       onClick={() =>
                         window.open(
-                          `https://www.google.com/maps?q=${encodeURIComponent(
-                            waste.location
-                          )}`,
+                          `https://www.google.com/maps?q=${waste.latitude},${waste.longitude}`,
                           "_blank"
                         )
                       }

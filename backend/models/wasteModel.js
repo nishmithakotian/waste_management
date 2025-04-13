@@ -13,6 +13,10 @@ const WasteSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  location: {
+    type: String,
+    required: true,
+  },
   contactNumber: {
     type: String,
     required: true,
