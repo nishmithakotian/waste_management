@@ -1,16 +1,20 @@
 const express = require("express");
 const {
-  addWaste,
+  addReportedWaste,
+  addSellWaste,
   deleteWaste,
   updateWaste,
-  getAllWastes,
+  getReportedWastes,
+  getSellWastes,
 } = require("../controllers/wasteController");
 
 const router = express.Router();
 
-router.post("/add", addWaste);
+router.post("/report", addReportedWaste);
+router.post("/sell", addSellWaste);
 router.delete("/delete/:wasteId", deleteWaste);
 router.put("/update/:wasteId", updateWaste);
-router.get("/all", getAllWastes);
+router.get("/report", getReportedWastes);
+router.get("/sell", getSellWastes);
 
 module.exports = router;

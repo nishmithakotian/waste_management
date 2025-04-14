@@ -16,6 +16,8 @@ const Post = () => {
     contact: "",
     description: "",
     status: "Reported", // Default status
+    category:"",
+    price: "",
   });
   const [isUploading, setIsUploading] = useState(false);
   const [wastes, setWastes] = useState([]);
@@ -114,9 +116,11 @@ const Post = () => {
         longitude: formData.longitude,
         contactNumber: formData.contact,
         description: formData.description,
-        status: formData.status, // Include status
+        status: formData.category === "Sell" ? undefined : formData.status,
+        price: formData.category === "Sell" ? formData.price : undefined, // Include status
         image: imageUrl,
         userID: userId,
+        category: formData.category,
       };
 
       if (isEdit) {
@@ -126,8 +130,10 @@ const Post = () => {
         );
         alert("Waste updated successfully!");
       } else {
+        const url = `https://waste-management-0kpq.onrender.com/waste/${formData.category}`;
         await axios.post(
-          "https://waste-management-0kpq.onrender.com/waste/add",
+          // "https://waste-management-0kpq.onrender.com/waste/add",
+          url,
           data
         );
         alert("Waste added successfully!");
@@ -190,6 +196,7 @@ const Post = () => {
       contact: waste.contactNumber,
       description: waste.description,
       status: waste.status || "Reported", // Default to "Reported" if status is missing
+      category: waste.category||"",
     });
     setShowModal(true);
   };
@@ -254,9 +261,11 @@ const Post = () => {
                 <h3 className="text-lg font-bold text-[#64FFDA]">
                   {waste.typeOfWaste}
                 </h3>
-                <p className="text-sm text-[#CCD6F6]">
-                  <strong>Status:</strong> {waste.status}
-                </p>
+                {waste.category !== "Sell" && (
+                  <p className="text-sm text-[#CCD6F6]">
+                    <strong>Status:</strong> {waste.status}
+                  </p>
+                )}
                 <p className="text-sm text-[#CCD6F6]">
                   <strong>Contact:</strong> {waste.contactNumber}
                 </p>
@@ -309,6 +318,23 @@ const Post = () => {
                   />
                 )}
               </div>
+                {/* Sell or Report*/}
+              <div className="mb-4">
+                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+                  Report or Sell
+                </label>
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
+                  required
+                >
+                  <option value="">Select</option>
+                  <option value="Report">Report</option>
+                  <option value="Sell">Sell</option>
+                </select>
+              </div>
 
               <div className="mb-4">
                 <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
@@ -330,24 +356,42 @@ const Post = () => {
                 </select>
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
-                  Status
-                </label>
-                <select
-                  name="status"
-                  value={formData.status}
-                  onChange={handleChange}
-                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
-                  required
-                >
-                  {statusOptions.map((status, index) => (
-                    <option key={index} value={status}>
-                      {status}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {formData.category === "Sell" ? (
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+                    Price (in ₹)
+                  </label>
+                  <input
+                    type="number"
+                    name="price"
+                    value={formData.price}
+                    onChange={handleChange}
+                    placeholder="Enter price"
+                    className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
+                    required
+                  />
+                </div>
+              ) : (
+                <div className="mb-4">
+                  <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+                    Status
+                  </label>
+                  <select
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
+                    required
+                  >
+                    {statusOptions.map((status, index) => (
+                      <option key={index} value={status}>
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
 
               <div className="mb-4">
                 <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
@@ -376,6 +420,15 @@ const Post = () => {
                   className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
                 />
               </div>
+
+              
+              <button
+                type="button"
+                onClick={fetchLocation}
+                className="px-4 py-2 bg-[#64FFDA] text-[#0A192F] rounded-lg font-semibold"
+              >
+                Use Current Location
+            </button>
             </form>
             <div className="flex justify-end gap-2">
               <button

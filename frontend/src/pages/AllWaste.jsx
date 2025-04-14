@@ -14,6 +14,7 @@ const AllWaste = () => {
   const [search, setSearch] = useState("");
   const [typeFilter, setTypeFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("reported");
 
   
 
@@ -37,9 +38,13 @@ const AllWaste = () => {
   // Fetch all waste data
   const fetchAllWaste = async () => {
     try {
+      const url = 
+      categoryFilter === "sell"
+      ? "https://waste-management-0kpq.onrender.com/waste/sell"
+      : "https://waste-management-0kpq.onrender.com/waste/report";
       const { data } = await axios.get(
-        "https://waste-management-0kpq.onrender.com/waste/all"
-
+        // "https://waste-management-0kpq.onrender.com/waste/all"
+        url
       );
       // Fetch addresses for each waste based on latitude/longitude
 
@@ -55,7 +60,7 @@ const AllWaste = () => {
   // Apply filters based on search, type, and status
   const applyFilters = () => {
     let filtered = wastes;
-
+  
     if (search) {
       filtered = filtered.filter(
         (waste) =>
@@ -63,17 +68,25 @@ const AllWaste = () => {
           waste.location.toLowerCase().includes(search.toLowerCase())
       );
     }
-
+  
     if (typeFilter) {
       filtered = filtered.filter((waste) => waste.typeOfWaste === typeFilter);
     }
-
+  
     if (statusFilter) {
       filtered = filtered.filter((waste) => waste.status === statusFilter);
     }
-
+  
+    // Filter by category (reported vs sell)
+    if (categoryFilter === "reported") {
+      filtered = filtered.filter((waste) => waste.category !== "sell");
+    } else if (categoryFilter === "sell") {
+      filtered = filtered.filter((waste) => waste.category === "sell");
+    }
+  
     setFilteredWastes(filtered);
   };
+  
 
   // Reset filters and show all wastes
   const resetFilters = () => {
@@ -85,11 +98,11 @@ const AllWaste = () => {
 
   useEffect(() => {
     fetchAllWaste();
-  }, []);
+  }, [categoryFilter]);
 
   useEffect(() => {
     applyFilters();
-  }, [search, typeFilter, statusFilter]);
+  },  [search, typeFilter, statusFilter, categoryFilter]);
 
   return (
     <>
@@ -149,6 +162,33 @@ const AllWaste = () => {
         </div>
       </div>
 
+      {/* Category Toggle */}
+      <div className="p-4 bg-[#0A192F] flex justify-center">
+        <div className="w-full max-w-4xl flex justify-center gap-4">
+          <button
+            onClick={() => setCategoryFilter("reported")}
+            className={`px-4 py-2 rounded-lg font-semibold transition duration-300 ${
+              categoryFilter === "reported"
+                ? "bg-[#64FFDA] text-[#0A192F]"
+                : "bg-[#112240] text-[#CCD6F6] border border-[#2C3E50]"
+            }`}
+          >
+            Reported Waste
+          </button>
+          <button
+            onClick={() => setCategoryFilter("sell")}
+            className={`px-4 py-2 rounded-lg font-semibold transition duration-300 ${
+              categoryFilter === "sell"
+                ? "bg-[#64FFDA] text-[#0A192F]"
+                : "bg-[#112240] text-[#CCD6F6] border border-[#2C3E50]"
+            }`}
+          >
+            Waste for Sale
+          </button>
+        </div>
+      </div>
+
+
       {/* Loading Spinner */}
       {loading ? (
         <div className="flex justify-center items-center h-[80vh] bg-[#0A192F]">
@@ -156,9 +196,6 @@ const AllWaste = () => {
         </div>
       ) : (
         <div className="p-4 md:p-6 bg-[#0A192F] h-screen overflow-auto">
-          <h1 className="text-lg md:text-2xl font-bold text-[#64FFDA] mb-6">
-            All Waste
-          </h1>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {filteredWastes.length > 0 ? (
               filteredWastes.map((waste) => (
@@ -182,13 +219,20 @@ const AllWaste = () => {
                   <p className="text-sm text-[#CCD6F6]">
                     <strong>Contact:</strong> {waste.contactNumber}
                   </p>
-                  <p className="text-sm text-[#CCD6F6]">
-                    <strong>Status:</strong> {waste.status}
-                  </p>
+                  {waste.category === "report" && (
+                    <p className="text-sm text-[#CCD6F6]">
+                      <strong>Status:</strong> {waste.status}
+                    </p>
+                  )}
                   <p className="text-sm text-[#CCD6F6]">
                     <strong>Description:</strong>{" "}
                     {waste.description ? waste.description : "N/A"}
                   </p>
+                  {waste.category === "sell" && (
+                  <p className="text-sm text-[#64FFDA] font-semibold">
+                    <strong>Price:</strong> ₹{waste.price}
+                  </p>
+                )}
                   <div className="flex justify-end items-center gap-4 mt-4">
                     {/* Green Tick for "Cleaned" Status */}
                     {waste.status == "Cleaned" && (

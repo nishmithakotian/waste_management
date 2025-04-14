@@ -39,6 +39,17 @@ const WasteSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  category: {
+    type: String,
+    enum: ['report', 'sell'],
+    required: true,
+  },
+  price: {
+    type: Number,
+    required: function () {
+      return this.category === 'sell';
+    },
+  },
 });
 
 const Waste = mongoose.model("Waste", WasteSchema);
