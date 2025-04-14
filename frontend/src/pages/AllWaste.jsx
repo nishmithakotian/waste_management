@@ -76,14 +76,7 @@ const AllWaste = () => {
     if (statusFilter) {
       filtered = filtered.filter((waste) => waste.status === statusFilter);
     }
-  
-    // Filter by category (reported vs sell)
-    if (categoryFilter === "reported") {
-      filtered = filtered.filter((waste) => waste.category !== "sell");
-    } else if (categoryFilter === "sell") {
-      filtered = filtered.filter((waste) => waste.category === "sell");
-    }
-  
+    
     setFilteredWastes(filtered);
   };
   
@@ -197,7 +190,11 @@ const AllWaste = () => {
       ) : (
         <div className="p-4 md:p-6 bg-[#0A192F] h-screen overflow-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
-            {filteredWastes.length > 0 ? (
+          {!loading && filteredWastes.length === 0 ? (
+            <p className="text-[#CCD6F6] text-center col-span-full">
+              No waste found matching your filters.
+            </p>
+          ) : (
               filteredWastes.map((waste) => (
                 <div
                   key={waste._id}
@@ -261,11 +258,10 @@ const AllWaste = () => {
                   </div>
                 </div>
               ))
-            ) : (
-              <p className="text-[#CCD6F6] text-center col-span-full">
-                No waste found matching your filters.
-              </p>
-            )}
+              // render each waste
+            
+          )}
+
           </div>
         </div>
       )}

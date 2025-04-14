@@ -221,11 +221,13 @@ const Post = () => {
               contact: "",
               description: "",
               status: "Reported", // Reset status
+              category: "",
+              price: "",
             });
           }}
           className="bg-[#64FFDA] text-[#0A192F] px-4 py-2 rounded hover:bg-[#52D1C2] transition duration-300"
         >
-          Add Waste
+          Upload +
         </button>
       </div>
 
@@ -251,6 +253,10 @@ const Post = () => {
                 key={waste._id}
                 className="bg-[#1A2A4F] rounded-lg shadow-lg p-4 border border-[#2C3E50] w-full sm:w-[400px] h-[400px]"
               >
+                <span className={`inline-block mb-3 px-2 py-1 text-sm rounded-full text-white ${waste.category === 'sell' ? 'bg-green-600' : 'bg-blue-600'}`}>
+                  {waste.category === 'sell' ? 'Waste for Sale' : 'Reported Waste'}
+                </span>
+
                 {waste.image && (
                   <img
                     src={waste.image}
@@ -261,13 +267,20 @@ const Post = () => {
                 <h3 className="text-lg font-bold text-[#64FFDA]">
                   {waste.typeOfWaste}
                 </h3>
-                {waste.category !== "Sell" && (
+                {waste.category !== "sell" ? (
                   <p className="text-sm text-[#CCD6F6]">
                     <strong>Status:</strong> {waste.status}
+                  </p>
+                ) : (
+                  <p className="text-sm text-[#CCD6F6]">
+                    <strong>Price:</strong> ₹{waste.price}
                   </p>
                 )}
                 <p className="text-sm text-[#CCD6F6]">
                   <strong>Contact:</strong> {waste.contactNumber}
+                </p>
+                <p className="text-sm text-[#CCD6F6]">
+                  <strong>Location:</strong> {waste.location}
                 </p>
                 {waste.description && (
                   <p className="text-sm text-[#CCD6F6] mt-2">
