@@ -29,16 +29,10 @@ const Post = () => {
 
   // Waste types for dropdown
   const wasteTypes = [
-    "Organic Waste (food scraps, leaves)",
-    "Plastic Waste (bottles, wrappers, containers)",
-    "Glass Waste (broken glass, bottles, jars)",
-    "Metal Waste (cans, aluminum, iron scraps)",
-    "Paper Waste (newspapers, cardboard, books)",
-    "Electronic Waste (E-Waste) (mobile phones, wires, batteries)",
-    "Medical Waste (masks, syringes, gloves)",
-    "Hazardous Waste (chemicals, paints, pesticides)",
-    "Textile Waste (old clothes, fabric scraps)",
-    "Construction Waste (bricks, cement, wood)",
+    "Wet Waste",
+    "Dry Waste",
+    "Electronics Waste",
+    "Medical Wastee"
   ];
 
   // Status options for dropdown
@@ -92,6 +86,42 @@ const Post = () => {
     } catch (error) {
       console.error("Error uploading to Cloudinary:", error);
       throw new Error("Cloudinary upload failed.");
+    }
+  };
+
+  const handleCheckAI = async () => {
+    if (!formData.image) {
+      alert("Please upload an image first.");
+      return;
+    }
+  
+    setIsUploading(true);
+  
+    try {
+      // Step 1: Upload the image to Cloudinary to get the public URL
+      const imageUrl = await uploadToCloudinary(formData.image);
+  
+      // Step 2: Send the image URL to your server for classification
+      const response = await axios.post("https://waste-model.onrender.com/type", {
+        imageUrl,
+      });
+  
+      // Assuming the response from your server contains the classification result
+      const classification = response.data.type;  // For example, 'biodegradable', 'recyclable', etc.
+  
+      // Update formData with the classification result
+      setFormData((prev) => ({
+        ...prev,
+        type: classification,
+      }));
+  
+      alert(`Image classified as: ${classification}`);
+  
+    } catch (error) {
+      console.error("Error during AI classification:", error);
+      alert("Image classification failed. Please try again.");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -350,24 +380,34 @@ const Post = () => {
               </div>
 
               <div className="mb-4">
-                <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
-                  Type of Waste
-                </label>
-                <select
-                  name="type"
-                  value={formData.type}
-                  onChange={handleChange}
-                  className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
-                  required
-                >
-                  <option value="">Select Waste Type</option>
-                  {wasteTypes.map((type, index) => (
-                    <option key={index} value={type}>
-                      {type}
-                    </option>
-                  ))}
-                </select>
-              </div>
+  <label className="block text-sm font-bold text-[#CCD6F6] mb-2">
+    Type of Waste
+  </label>
+  <div className="flex gap-2">
+    <select
+      name="type"
+      value={formData.type}
+      onChange={handleChange}
+      className="w-full border border-[#2C3E50] p-2 rounded bg-[#112240] text-[#CCD6F6]"
+      required
+    >
+      <option value="">Select Waste Type</option>
+      {wasteTypes.map((type, index) => (
+        <option key={index} value={type}>
+          {type}
+        </option>
+      ))}
+    </select>
+
+    <button
+      type="button"
+      onClick={handleCheckAI}
+      className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-3 rounded"
+    >
+      Check using AI
+    </button>
+  </div>
+</div>
 
               {formData.category === "Sell" ? (
                 <div className="mb-4">
