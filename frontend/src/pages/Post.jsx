@@ -32,7 +32,8 @@ const Post = () => {
     "Wet Waste",
     "Dry Waste",
     "Electronics Waste",
-    "Medical Wastee"
+    "Medical Waste",
+    "NA"
   ];
 
   // Status options for dropdown
