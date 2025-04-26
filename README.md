@@ -1,1 +1,1 @@
-# waste_management
+# Waste Management
