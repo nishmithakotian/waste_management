@@ -4,6 +4,8 @@ import bg from "../assets/bg.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +19,7 @@ const Login = () => {
 
     try {
       const response = await axios.post(
-        "https://waste-management-0kpq.onrender.com/user/login",
+        `${BACKEND_URL}/user/login`,
         userCredentials,
         {
           headers: {

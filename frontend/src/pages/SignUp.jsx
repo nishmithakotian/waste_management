@@ -4,6 +4,8 @@ import bg from "../assets/bg.png";
 import { Link, useNavigate } from "react-router-dom";
 import { ImSpinner8 } from "react-icons/im";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL; 
+
 const SignUp = () => {
   // State for form inputs
   const [name, setName] = useState("");
@@ -24,7 +26,7 @@ const SignUp = () => {
 
     try {
       const response = await axios.post(
-        "https://waste-management-0kpq.onrender.com/user/register",
+        `${BACKEND_URL}/user/register`,
         userDetails,
         {
           headers: {

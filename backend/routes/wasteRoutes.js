@@ -8,6 +8,11 @@ const {
   getSellWastes,
 } = require("../controllers/wasteController");
 
+const {
+  checkWaste,
+  wasteType,
+} = require("../controllers/llmController");
+
 const router = express.Router();
 
 router.post("/report", addReportedWaste);
@@ -16,5 +21,8 @@ router.delete("/delete/:wasteId", deleteWaste);
 router.put("/update/:wasteId", updateWaste);
 router.get("/report", getReportedWastes);
 router.get("/sell", getSellWastes);
+router.post("/check-waste", checkWaste);
+router.post("/check-type", wasteType);
+
 
 module.exports = router;

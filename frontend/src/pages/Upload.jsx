@@ -3,12 +3,30 @@ import axios from "axios";
 import { ImSpinner8 } from "react-icons/im";
 import Header from "../Components/Header";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+
 const Upload = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [isPredictionModalOpen, setIsPredictionModalOpen] = useState(false);
   const [isSolutionModalOpen, setIsSolutionModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+
+    const uploadToCloudinary = async (imageFile) => {
+      const cloudinaryUrl =
+        "https://api.cloudinary.com/v1_1/dgplustqn/image/upload";
+      const formData = new FormData();
+      formData.append("file", imageFile);
+      formData.append("upload_preset", "pmcr8gua");
+  
+      try {
+        const response = await axios.post(cloudinaryUrl, formData);
+        return response.data.secure_url;
+      } catch (error) {
+        console.error("Error uploading to Cloudinary:", error);
+        throw new Error("Cloudinary upload failed.");
+      }
+    };
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
@@ -35,15 +53,13 @@ const Upload = () => {
     formData.append("file", selectedImage);
 
     try {
+      
+      const imageUrl = await uploadToCloudinary(selectedImage);
+
       const response = await axios.post(
-        "https://waste-model.onrender.com/upload",
+        `${BACKEND_URL}/waste/check-waste`,
         // "http://localhost:3000/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
+        {imageUrl}
       );
       setPrediction(response.data.prediction);
       setLoading(false);

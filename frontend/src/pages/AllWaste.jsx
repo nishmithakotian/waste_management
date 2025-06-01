@@ -6,6 +6,7 @@ import { ImSpinner8 } from "react-icons/im";
 import { FaCheckCircle } from "react-icons/fa"; // Import the green tick icon
 import Header from "../Components/Header";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const AllWaste = () => {
   const [wastes, setWastes] = useState([]);
@@ -40,8 +41,8 @@ const AllWaste = () => {
     try {
       const url = 
       categoryFilter === "sell"
-      ? "https://waste-management-0kpq.onrender.com/waste/sell"
-      : "https://waste-management-0kpq.onrender.com/waste/report";
+      ? `${BACKEND_URL}/waste/sell`
+      : `${BACKEND_URL}/waste/report`;
       const { data } = await axios.get(
         // "https://waste-management-0kpq.onrender.com/waste/all"
         url

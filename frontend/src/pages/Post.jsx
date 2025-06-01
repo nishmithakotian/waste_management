@@ -4,10 +4,13 @@ import { MdDelete, MdOutlineChangeCircle } from "react-icons/md";
 import { ImSpinner8 } from "react-icons/im";
 import Header from "../Components/Header";
 
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL
+
 const Post = () => {
   const [showModal, setShowModal] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editWasteId, setEditWasteId] = useState(null);
+  const [aiClassifying, setAiClassifying] = useState(false);
   const [formData, setFormData] = useState({
     image: null,
     type: "",
@@ -96,33 +99,34 @@ const Post = () => {
       return;
     }
   
-    setIsUploading(true);
+    setAiClassifying(true);
   
     try {
       // Step 1: Upload the image to Cloudinary to get the public URL
       const imageUrl = await uploadToCloudinary(formData.image);
   
-      // Step 2: Send the image URL to your server for classification
-      const response = await axios.post("https://waste-model.onrender.com/type", {
+      // Step 2: Send the image URL to your server for classification 
+      const response = await axios.post(`${BACKEND_URL}/waste/check-type`, {
         imageUrl,
       });
   
       // Assuming the response from your server contains the classification result
-      const classification = response.data.type;  // For example, 'biodegradable', 'recyclable', etc.
+        // For example, 'biodegradable', 'recyclable', etc.
   
       // Update formData with the classification result
       setFormData((prev) => ({
         ...prev,
-        type: classification,
+        type: response.data.type,
+        description: response.data.description || ""
       }));
   
-      alert(`Image classified as: ${classification}`);
+      alert(`Image classified as: ${response.data.type}`);
   
     } catch (error) {
       console.error("Error during AI classification:", error);
       alert("Image classification failed. Please try again.");
     } finally {
-      setIsUploading(false);
+      setAiClassifying(false);
     }
   };
 
@@ -156,12 +160,12 @@ const Post = () => {
 
       if (isEdit) {
         await axios.put(
-          `https://waste-management-0kpq.onrender.com/waste/update/${editWasteId}`,
+          `${BACKEND_URL}/waste/update/${editWasteId}`,
           data
         );
         alert("Waste updated successfully!");
       } else {
-        const url = `https://waste-management-0kpq.onrender.com/waste/${formData.category}`;
+        const url = `${BACKEND_URL}/waste/${formData.category}`;
         await axios.post(
           // "https://waste-management-0kpq.onrender.com/waste/add",
           url,
@@ -195,7 +199,7 @@ const Post = () => {
     try {
       setSpinner(true); // Show spinner while fetching data
       const { data } = await axios.get(
-        `https://waste-management-0kpq.onrender.com/user/${userId}`
+        `${BACKEND_URL}/user/${userId}`
       );
       setWastes(data?.user?.wastes || []);
     } catch (error) {
@@ -208,7 +212,7 @@ const Post = () => {
   const handleDel = async (wasteId) => {
     try {
       await axios.delete(
-        `https://waste-management-0kpq.onrender.com/waste/delete/${wasteId}`
+        `${BACKEND_URL}/waste/delete/${wasteId}`
       );
       getUser();
     } catch (error) {
@@ -496,7 +500,14 @@ const Post = () => {
                 className="bg-[#64FFDA] text-[#0A192F] px-4 py-2 rounded hover:bg-[#52D1C2] transition duration-300"
                 disabled={isUploading}
               >
-                {isUploading ? "Saving..." : isEdit ? "Update" : "Save"}
+                {aiClassifying
+                  ? "Classifying..."
+                  : isUploading
+                  ? "Saving..."
+                  : isEdit
+                  ? "Update"
+                  : "Save"
+                }
               </button>
             </div>
           </div>
