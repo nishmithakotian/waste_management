@@ -1,6 +1,7 @@
 import React from "react";
 import bgVideo from "../assets/bgVideo.mp4"; // Replace with your video file
 import Header from "../Components/Header";
+import { Link } from 'react-router-dom';
 import {
   AiOutlineCloudUpload,
   AiOutlineGlobal,
@@ -16,30 +17,35 @@ const Home = () => {
       description:
         "Upload images of waste to classify them into recyclable, organic, or hazardous categories using AI.",
       icon: <AiOutlineCloudUpload className="text-6xl text-green-500 mb-4" />,
+      route: "/post"
     },
     {
       title: "Cleaning Drive Locations",
       description:
         "Discover and join cleaning drives near you. Upload live locations for community-driven waste management.",
       icon: <AiOutlineEnvironment className="text-6xl text-blue-500 mb-4" />,
+      route: "/map"
     },
     {
       title: "AI-Powered Solutions",
       description:
         "Get smart waste management solutions powered by Machine Learning and AI algorithms.",
       icon: <AiOutlineRobot className="text-6xl text-purple-500 mb-4" />,
+      route: "/upload"
     },
     {
       title: "Community Posts",
       description:
         "Share and view posts about waste management initiatives, tips, and success stories.",
       icon: <AiOutlineGlobal className="text-6xl text-yellow-500 mb-4" />,
+      route: "/allWaste"
     },
     {
       title: "Learn About Waste",
       description:
         "Access comprehensive resources to learn about proper waste disposal and recycling techniques.",
       icon: <AiOutlineInfoCircle className="text-6xl text-red-500 mb-4" />,
+      route: "#"
     },
   ];
 
@@ -78,16 +84,18 @@ const Home = () => {
           <h2 className="text-4xl font-bold text-center mb-8">Our Features</h2>
           <div className="mx-auto flex justify-evenly items-center gap-10 flex-wrap px-4">
             {featureCards.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center hover:scale-105 hover:opacity-75 cursor-pointer w-[350px]"
-              >
-                {feature.icon}
-                <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
-                <p className="text-gray-600 text-center">
-                  {feature.description}
-                </p>
-              </div>
+              <Link to={feature.route} key={index} className="w-[350px]"> 
+                <div
+                  key={index}
+                  className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center justify-center hover:scale-105 hover:opacity-75 cursor-pointer w-[350px]"
+                >
+                  {feature.icon}
+                  <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                  <p className="text-gray-600 text-center">
+                    {feature.description}
+                  </p>
+                </div>
+              </Link>
             ))}
           </div>
         </section>
